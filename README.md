@@ -10,7 +10,7 @@ This Terraform script sets up an AWS Elastic Beanstalk environment for my-web-ap
 ### Instructions
 1. Clone this repository.
 2. Set up AWS credentials.(IAM user or role)
-3. Modify variables in `variables.tf` if needed.
+3. Modify variables in `global_variable.tf` if needed.
 4. Run `terraform init`, `terraform plan`, `terraform apply`.
 5. Access the deployed application using the provided URL in outputs.
 
@@ -26,5 +26,12 @@ The setup includes:
 - Elastic Beanstalk details
 - Auto Scaling configurations
 - IP range for SSH access
+  
+#### Module based structure
+- IAM 
+- Elasticbeanstalk
+- EC2
+- Autoscaller
+- VPC
 
 For more detailed information, refer to individual modules main.tf files.
