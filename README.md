@@ -12,7 +12,11 @@ This Terraform script sets up an AWS Elastic Beanstalk environment for my-web-ap
 2. Set up AWS credentials.(IAM user or role)
 3. Modify variables in `global_variable.tf` if needed.
 4. Run `terraform init`, `terraform plan`, `terraform apply`.
-5. Access the deployed application using the provided URL in outputs.
+5. `terraform plan -var-file="gloabl/my-web-app/{environment}/global_variables.tfvars"`,
+   `terraform apply -var-file="gloabl/my-web-app/{environment}/global_variables.tfvars"`,
+   `terrafrom destroy -var-file="gloabl/my-web-app/{environment}/global_variables.tfvars"`
+   
+6. Access the deployed application using the provided URL in outputs.
 
 ### Architecture Overview
 The setup includes:
@@ -27,7 +31,7 @@ The setup includes:
 - Auto Scaling configurations
 - IP range for SSH access
   
-#### Module based structure
+### Module based structure (modules/<module_name>/main.tf)
 - IAM 
 - Elasticbeanstalk
 - EC2
