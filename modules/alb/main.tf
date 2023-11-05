@@ -17,9 +17,8 @@ resource "aws_lb" "demo_load_balancer" {
 
 # Security Group for Load Balancer
 resource "aws_security_group" "lb_sg" {
-  name        = "lb-security-group"
+  name        = "${var.global.country}-${var.global.organization}-${var.global.environment_name}-lb-security-group"
   description = "Security group for the load balancer"
-
   vpc_id = aws_vpc.main.id
 
   # Allow inbound traffic for HTTP and HTTPS from anywhere
@@ -51,9 +50,8 @@ resource "aws_security_group" "lb_sg" {
 
 # Security Group for EC2 instances in the Elastic Beanstalk environment
 resource "aws_security_group" "instance_sg" {
-  name        = "instance-security-group"
+  name        = "${var.global.country}-${var.global.organization}-${var.global.environment_name}-Instance-SG"
   description = "Security group for EC2 instances in the Beanstalk environment"
-
   vpc_id = aws_vpc.main.id
 
   # Allow inbound traffic only from the Load Balancer
@@ -89,4 +87,12 @@ resource "aws_security_group" "instance_sg" {
   tags = {
     Name = "instance-security-group"
   }
+}
+
+output "aws_security_group_lb_sg_output" {
+  value = aws_security_group.lb_sg.id
+}
+
+output "aws_security_group" {
+  value = aws_security_group.instance_sg.id
 }
