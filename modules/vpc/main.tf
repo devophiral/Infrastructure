@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "ap-south-1" 
+  region = "us-west-2" 
 }
 
 # Create VPC
@@ -18,6 +18,7 @@ resource "aws_internet_gateway" "igw" {
 resource "aws_subnet" "public" {
   vpc_id = aws_vpc.main.id
   cidr_block = "10.0.1.0/24"  # public subnet CIDR block
+  availability_zone = "us-west-2a"  # Update with your desired AZ
   map_public_ip_on_launch = true
 }
 
@@ -25,6 +26,7 @@ resource "aws_subnet" "public" {
 resource "aws_subnet" "private" {
   vpc_id = aws_vpc.main.id
   cidr_block = "10.0.2.0/24"  # private subnet CIDR block
+  availability_zone = "us-west-2b"  # Update with your desired AZ
 }
 
 # Create Route Tables
