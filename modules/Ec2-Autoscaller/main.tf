@@ -1,5 +1,5 @@
 provider "aws" {
-  region = var.region
+  region = var.global.region
 }
 
 
@@ -48,7 +48,7 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
   alarm_description   = "Alarm when CPU exceeds 70%"
   alarm_actions       = [aws_autoscaling_policy.scale_up_policy.arn]
 
-    dimensions {
+    dimensions = {
         AutoScalingGroupName = aws_autoscaling_group.demo.name
   }
 }
@@ -65,7 +65,7 @@ resource "aws_cloudwatch_metric_alarm" "low_cpu" {
   alarm_description   = "Alarm when CPU falls below 30%"
   alarm_actions       = [aws_autoscaling_policy.scale_down_policy.arn]
 
-  dimensions {
+  dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.demo.name
   }
 }
