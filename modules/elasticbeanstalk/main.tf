@@ -1,11 +1,14 @@
 provider "aws" {
   region = var.global.aws_region
+  assume_role {
+    role_arn = aws_iam_role.elasticbeanstalk_role.arn
+  }
 }
 
 # Configure Elastic Beanstalk application and environment
 resource "aws_elastic_beanstalk_application" "my_web_app" {
   name        = "my-web-app"
-  description = "My Web App"
+  description = "My Web App-Staging"
 }
 
 resource "aws_elastic_beanstalk_environment" "my_web_app_env" {

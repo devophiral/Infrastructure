@@ -1,10 +1,10 @@
 provider "aws" {
-  region = "us-west-2" 
+  region = var.global.region
 }
 
 # Create VPC
 resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"  # VPC CIDR block
+  cidr_block = var.global.vpc_cidr  # VPC CIDR block
   enable_dns_support = true
   enable_dns_hostnames = true
 }
@@ -17,16 +17,16 @@ resource "aws_internet_gateway" "igw" {
 # Create Public Subnets
 resource "aws_subnet" "public" {
   vpc_id = aws_vpc.main.id
-  cidr_block = "10.0.1.0/24"  # public subnet CIDR block
-  availability_zone = "us-west-2a"  # Update with your desired AZ
+  cidr_block = var.global.public_cidr_block
+  availability_zone = var.global.az1 # Update with your desired AZ
   map_public_ip_on_launch = true
 }
 
 # Create Private Subnets
 resource "aws_subnet" "private" {
   vpc_id = aws_vpc.main.id
-  cidr_block = "10.0.2.0/24"  # private subnet CIDR block
-  availability_zone = "us-west-2b"  # Update with your desired AZ
+  cidr_block = var.global.private_cidr_block  # private subnet CIDR block
+  availability_zone = var.global.az2  # Update with desired AZ2
 }
 
 # Create Route Tables
@@ -34,7 +34,7 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.global.cidr_blocks
     gateway_id = aws_internet_gateway.igw.id
   }
 }
