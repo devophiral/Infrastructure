@@ -6,10 +6,7 @@ variable "global" {
     region	= "us-west-2"
     application_name  = "demo-app"
     vpc_id	=  my_vpc
-    cidr_blocks	= [
-      "0.0.0.0/0"
-    ]
-    server_ip =
+    cidr_blocks	= ["0.0.0.0/0"]
     public_cidr_block = ["10.0.1.0/24"]
     private_cidr_block = ["10.0.2.0/24"]
     vpc_cidr = ["10.0.0.0/16"]
