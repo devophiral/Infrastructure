@@ -1,0 +1,92 @@
+provider "aws" {
+    region = var.global.region
+  
+}
+resource "aws_lb" "demo_load_balancer" {
+  name               = "demo-load-balancer"
+  internal           = false  # Set to true for internal load balancer
+  load_balancer_type = "application"
+  subnets = [aws_subnet.public.id]  # public subnet ID
+  security_groups = [aws_security_group.lb_sg.id]
+  enable_deletion_protection = false
+
+  tags = {
+    Name = "demo-load-balancer"
+  }
+}
+
+# Security Group for Load Balancer
+resource "aws_security_group" "lb_sg" {
+  name        = "lb-security-group"
+  description = "Security group for the load balancer"
+
+  vpc_id = aws_vpc.main.id
+
+  # Allow inbound traffic for HTTP and HTTPS from anywhere
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Allow outbound traffic
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "lb-security-group"
+  }
+}
+
+# Security Group for EC2 instances in the Elastic Beanstalk environment
+resource "aws_security_group" "instance_sg" {
+  name        = "instance-security-group"
+  description = "Security group for EC2 instances in the Beanstalk environment"
+
+  vpc_id = aws_vpc.main.id
+
+  # Allow inbound traffic only from the Load Balancer
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    security_groups = [aws_security_group.lb_sg.id]
+  }
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    security_groups = [aws_security_group.lb_sg.id]
+  }
+
+  # Restrict SSH access to a specific IP range (replace X.X.X.X/32 with the desired IP)
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["X.X.X.X/32"]  # Ec2 IP 
+  }
+
+  # Allow outbound traffic
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "instance-security-group"
+  }
+}

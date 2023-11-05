@@ -12,5 +12,6 @@ variable "global" {
     private_subnet	= list(string)
     public_subnet	= list(string)
     IAM_Role	= string
+    keypair = string
 })
 }
