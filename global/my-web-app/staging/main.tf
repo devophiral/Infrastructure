@@ -7,18 +7,21 @@ module "iam" {
   global = var.global
 }
 module "vpc" {
+  
   source = "../../../modules/vpc"  # Path to VPC module
   global = var.global
+  
 }
 
 module "elasticbeanstalk" {
-  global = var.global
+  
   source    = "../../../modules/elasticbeanstalk"  # Path to Elastic Beanstalk module
+  global = var.global
 }
 module "alb" {
-  global = var.global
+  
   source        = "../../../modules/alb"  # Path to ALB module
-  subnet_id = module.vpc.public_subnet_id.id
+  global = var.global
 }
 module "ec2-autoscaller" {
   source        = "../../../modules/ec2-autoscaller"  # Path to Autoscaller module
