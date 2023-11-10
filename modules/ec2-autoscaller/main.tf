@@ -2,7 +2,23 @@ provider "aws" {
   region = var.global.region
 }
 
+data "aws_vpc" "vpc" {
+  filter {
+  name = "tag:Name"
+    values = ["vpc-tf"]
+  }
+}
 
+data "aws_subnet" "subnet_1" {
+  filter {
+    name = "tag:Name"
+    values = ["public-subnet1"]
+  }
+}
+
+data "aws_security_group" "instance_sg" {
+  name = "${var.global.country}-${var.global.organization}-${var.global.environment_name}-Instance-SG"
+}
 # Auto Scaling Configuration
 
 resource "aws_autoscaling_group" "demo" {
@@ -11,8 +27,8 @@ resource "aws_autoscaling_group" "demo" {
   min_size             = 2
 
   launch_configuration = aws_launch_configuration.demo.id
-  vpc_zone_identifier  = [aws_subnet.public.id]  #Link this with public subnet ID
-
+  # vpc_zone_identifier  = [aws_subnet.public.id]  #Link this with public subnet ID
+  vpc_zone_identifier  = data.aws_subnet.subnet_1.id #Link this with public subnet ID
   health_check_type         = local.alb.health_check_type
   health_check_grace_period = local.alb.health_check_grace_period
   force_delete             = true
@@ -29,16 +45,18 @@ resource "aws_autoscaling_group" "demo" {
 }
 
 resource "aws_launch_configuration" "demo" {
-  name            = "${var.global.country}-${var.global.organization}-${var.global.environment}-EC2-001"
+  name            = "${var.global.country}-${var.global.organization}-${var.global.environment_name}-EC2-001"
   image_id        = var.input.image_id  # EC2-Amazon linux2 AMI ID
   instance_type   = var.input.instance_type    # Ec2 instance type
-  security_groups = [aws_security_group.demo.id]  # security group ID
+  security_groups = data.aws_security_group.instance_sg.id #sec group from alb module
   key_name        = var.global.keypair
 }
+
 
 resource "aws_cloudwatch_metric_alarm" "high_cpu" {
   alarm_name          = "high-cpu-utilization"
   comparison_operator = local.alb.comparison_operator
+
   evaluation_periods  = local.alb.evaluation_periods
   metric_name         = local.alb.metric_name
   namespace           = local.alb.namespace
