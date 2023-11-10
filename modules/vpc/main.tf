@@ -7,6 +7,9 @@ resource "aws_vpc" "main" {
   cidr_block = var.global.vpc_cidr  # VPC CIDR block
   enable_dns_support = true
   enable_dns_hostnames = true
+  tags = {
+    Name = "vpc-tf"
+  }
 }
 
 # Create Internet Gateway
@@ -20,6 +23,9 @@ resource "aws_subnet" "public" {
   cidr_block = var.global.public_cidr_block
   availability_zone = var.global.az1 # Update with your desired AZ
   map_public_ip_on_launch = true
+  tags = {
+      name = "public-subnet1" 
+  }
 }
 
 # Create Private Subnets
@@ -27,6 +33,9 @@ resource "aws_subnet" "private" {
   vpc_id = aws_vpc.main.id
   cidr_block = var.global.private_cidr_block  # private subnet CIDR block
   availability_zone = var.global.az2  # Update with desired AZ2
+    tags = {
+      name = "private-subnet1" 
+  }
 }
 
 # Create Route Tables
@@ -34,9 +43,10 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
   route {
-    cidr_block = var.global.cidr_blocks
+    cidr_block = var.global.cidr_block
     gateway_id = aws_internet_gateway.igw.id
   }
+
 }
 
 resource "aws_route_table" "private" {
