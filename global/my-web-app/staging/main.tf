@@ -1,3 +1,13 @@
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+      version = "~> 4.16"
+    }
+  }
+}
+
+
 provider "aws" {
     region = var.global.region
 }
@@ -22,10 +32,15 @@ module "alb" {
   
   source        = "../../../modules/alb"  # Path to ALB module
   global = var.global
+
 }
 module "ec2-autoscaller" {
   source        = "../../../modules/ec2-autoscaller"  # Path to Autoscaller module
   global = var.global
+  # depends_on = [
+  #   module.vpc
+  # ]
+
   input = {
       image_id = "ami-02643bbd3f82ce3b5"
       instance_type = "t2.micro"
