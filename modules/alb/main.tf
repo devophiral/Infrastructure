@@ -1,12 +1,25 @@
-provider "aws" {
-    region = var.global.region
-  
+
+data "aws_vpc" "vpc" {
+  filter {
+  name = "tag:Name"
+    values = ["${var.global.organization}-vpc-tf"]
+  }
 }
+
+data "aws_subnet" "subnet_1" {
+  filter {
+    name = "tag:Name"
+    values = ["private-subnet1"]
+  }
+}
+
 resource "aws_lb" "demo_load_balancer" {
   name               = "demo-load-balancer"
   internal           = false  # Set to true for internal load balancer
   load_balancer_type = "application"
-  subnets = [aws_subnet.public.id]  # public subnet ID
+  subnets = data.aws_subnet.subnet_1.id
+
+
   security_groups = [aws_security_group.lb_sg.id]
   enable_deletion_protection = false
 
@@ -19,7 +32,6 @@ resource "aws_lb" "demo_load_balancer" {
 resource "aws_security_group" "lb_sg" {
   name        = "${var.global.country}-${var.global.organization}-${var.global.environment_name}-lb-security-group"
   description = "Security group for the load balancer"
-  vpc_id = aws_vpc.main.id
 
   # Allow inbound traffic for HTTP and HTTPS from anywhere
   ingress {
@@ -52,7 +64,6 @@ resource "aws_security_group" "lb_sg" {
 resource "aws_security_group" "instance_sg" {
   name        = "${var.global.country}-${var.global.organization}-${var.global.environment_name}-Instance-SG"
   description = "Security group for EC2 instances in the Beanstalk environment"
-  vpc_id = aws_vpc.main.id
 
   # Allow inbound traffic only from the Load Balancer
   ingress {
@@ -73,7 +84,7 @@ resource "aws_security_group" "instance_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["X.X.X.X/32"]  # Ec2 IP 
+    cidr_blocks = ["0.0.0.0/0"]  # Ec2 IP 
   }
 
   # Allow outbound traffic
