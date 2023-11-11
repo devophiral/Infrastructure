@@ -1,8 +1,8 @@
 
 data "aws_vpc" "vpc" {
   filter {
-  name = "tag:Name"
-    values = ["${var.global.organization}-vpc-tf"]
+    name = "tag:Name"
+    values = ["vpc-tf"]
   }
 }
 
@@ -17,7 +17,7 @@ resource "aws_lb" "demo_load_balancer" {
   name               = "demo-load-balancer"
   internal           = false  # Set to true for internal load balancer
   load_balancer_type = "application"
-  subnets = data.aws_subnet.subnet_1.id
+  subnets = [data.aws_subnet.subnet_1.id]
 
 
   security_groups = [aws_security_group.lb_sg.id]
