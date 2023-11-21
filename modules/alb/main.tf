@@ -12,13 +12,20 @@ data "aws_subnet" "subnet_1" {
     values = ["private-subnet1"]
   }
 }
+data "aws_subnet" "subnet_2" {
+  filter {
+    name   = "tag:Name"
+    values = ["private-subnet2"]  # Assuming you have another subnet for AZ2
+  }
+}
+
 
 resource "aws_lb" "demo_load_balancer" {
   name               = "demo-load-balancer"
+  
   internal           = false  # Set to true for internal load balancer
   load_balancer_type = "application"
-  subnets = [data.aws_subnet.subnet_1.id]
-
+  subnets = [data.aws_subnet.subnet_1.id, data.aws_subnet.subnet_2.id]
 
   security_groups = [aws_security_group.lb_sg.id]
   enable_deletion_protection = false
@@ -31,6 +38,7 @@ resource "aws_lb" "demo_load_balancer" {
 # Security Group for Load Balancer
 resource "aws_security_group" "lb_sg" {
   name        = "${var.global.country}-${var.global.organization}-${var.global.environment_name}-lb-security-group"
+  vpc_id      = data.aws_vpc.vpc.id
   description = "Security group for the load balancer"
 
   # Allow inbound traffic for HTTP and HTTPS from anywhere
@@ -64,6 +72,9 @@ resource "aws_security_group" "lb_sg" {
 resource "aws_security_group" "instance_sg" {
   name        = "${var.global.country}-${var.global.organization}-${var.global.environment_name}-Instance-SG"
   description = "Security group for EC2 instances in the Beanstalk environment"
+  vpc_id      = data.aws_vpc.vpc.id
+
+
 
   # Allow inbound traffic only from the Load Balancer
   ingress {
