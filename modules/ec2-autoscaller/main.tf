@@ -11,6 +11,11 @@ data "aws_subnet" "subnet_1" {
     values = ["public-subnet1"]
   }
 }
+#Define the key pair
+resource "aws_key_pair" "example" {
+  key_name   = "test"  # The name of the key pair
+  public_key = "/home/lenovo/Downloads/test.pem"  # The public key file for the key pair
+}
 
 data "aws_security_group" "instance_sg" {
   name = "${var.global.country}-${var.global.organization}-${var.global.environment_name}-Instance-SG"
@@ -45,7 +50,8 @@ resource "aws_launch_configuration" "demo" {
   image_id        = var.input.image_id  # EC2-Amazon linux2 AMI ID
   instance_type   = var.input.instance_type    # Ec2 instance type
   security_groups = [data.aws_security_group.instance_sg.id] #sec group from alb module
-  key_name        = var.global.keypair
+  key_name        = aws_key_pair.example.key_name  
+  depends_on =  [aws_launch_configuration.demo]
 }
 
 
@@ -62,8 +68,8 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
   alarm_description   = "Alarm when CPU exceeds 70%"
   alarm_actions       = [aws_autoscaling_policy.scale_up_policy.arn]
 
-    dimensions = {
-        AutoScalingGroupName = aws_autoscaling_group.demo.name
+  dimensions = {
+      AutoScalingGroupName = aws_autoscaling_group.demo.name
   }
 }
 
