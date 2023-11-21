@@ -6,6 +6,6 @@ variable "global" {
     region	= string
     public_cidr_block = string
     vpc_cidr = string
-    keypair = string
+    # keypair = string
 })
 }
