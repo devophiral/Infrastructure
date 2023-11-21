@@ -13,7 +13,7 @@ resource "aws_iam_role" "elasticbeanstalk_role" {
       },
       {
         Effect = "Allow",
-        Action = "iam:GetRole",
+        Action = "iam:CreateRole",
         Resource = "arn:aws:iam::168289737616:role/ElasticBeanstalkRole"
       }
     ]
