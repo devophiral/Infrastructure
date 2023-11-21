@@ -6,6 +6,7 @@ variable "global" {
     cidr_block	= string
     public_cidr_block = string
     private_cidr_block = string
+    private1_cidr_block = string
     vpc_cidr = string
     keypair = string
     az1 = string
