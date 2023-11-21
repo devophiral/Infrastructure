@@ -24,7 +24,7 @@ resource "aws_subnet" "public" {
   availability_zone = var.global.az1 # Update with your desired AZ
   map_public_ip_on_launch = true
   tags = {
-      name = "public-subnet1" 
+      Name = "public-subnet1" 
   }
 }
 
@@ -34,7 +34,7 @@ resource "aws_subnet" "private" {
   cidr_block = var.global.private_cidr_block  # private subnet CIDR block
   availability_zone = var.global.az2  # Update with desired AZ2
     tags = {
-      name = "private-subnet1" 
+      Name = "private-subnet1" 
   }
 }
 

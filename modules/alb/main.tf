@@ -15,7 +15,7 @@ data "aws_subnet" "subnet_1" {
 data "aws_subnet" "subnet_2" {
   filter {
     name   = "tag:Name"
-    values = ["private-subnet2"]  # Assuming you have another subnet for AZ2
+    values = ["public-subnet1"]  # Assuming you have another subnet for AZ2
   }
 }
 
