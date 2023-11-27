@@ -12,5 +12,5 @@ global = {
     keypair = "/home/lenovo/Downloads/test1.pem"
     az1 = "us-west-2a"
     az2 = "us-west-2b"
-    policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkFullAccess"
+    policy_arn = "arn:aws:iam::aws:policy/service-role/AWSElasticBeanstalkService" #"arn:aws:iam::aws:policy/AWSElasticBeanstalkFullAccess"
 }

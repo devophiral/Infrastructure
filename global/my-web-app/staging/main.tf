@@ -32,7 +32,7 @@ module "ec2-autoscaller" {
       instance_type = "t2.micro"
     }
 
-  depends_on = [ module.vpc ]  
+  depends_on = [ module.vpc, module.alb ]  
 }
 
 
